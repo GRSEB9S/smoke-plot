@@ -7,4 +7,4 @@ The code is adapted from [Felix Schönbrodt](http://www.nicebread.de/visually-we
 ## Examples
 
 ![Ex1](viz_viridis.png)
-![Ex1](viz_magma.png)
+![Ex2](viz_magma.png)
