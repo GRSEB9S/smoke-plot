@@ -6,5 +6,5 @@ The code is adapted from [Felix Schönbrodt](http://www.nicebread.de/visually-we
 
 ## Examples
 
-![Ex1](viz_viridis.png)
-![Ex2](viz_magma.png)
+![Ex1](/img/viz_viridis.png)
+![Ex2](/img/viz_magma.png)
