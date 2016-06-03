@@ -6,4 +6,4 @@ The code is adapted from [Felix Schönbrodt](http://www.nicebread.de/visually-we
 
 ## Example
 
-![alt tag](https://raw.githubusercontent.com/username/projectname/branch/path/to/img.png)
+![Ex1](https://github.com/george-wood/VizUncertainty/viz_magma.png)
