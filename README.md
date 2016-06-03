@@ -1,4 +1,4 @@
-# WeightUncertainty
+# VizUncertainty
 
 A function for visualizing results uncertainty. The function draws from a user-supplied posterior distribution p(\theta|y) in the form of two vectors: (1) mean estimates and (2) error estimates. The draws are then graphed with visual weighting such that areas of the posterior with concentrated uncertainty are emphasized, whereas areas with diffuse uncertainty are less prominent.
 
