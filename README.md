@@ -4,25 +4,18 @@ A function (smoke.plot.R) for visualizing results uncertainty. The function draw
 
 The code is adapted from [Felix Schönbrodt](http://www.nicebread.de/visually-weighted-watercolor-plots-new-variants-please-vote/) and is motivated by Solomon Hsiang's [paper](http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2265501).
 
-## Examples
+## Usage
 ```
   mat <- as.matrix(read.table("https://github.com/george-wood/example_matrix.txt", header=FALSE))
-  palette <- 'deepskyblue4'
-  smoke.plot(mat, palette=palette, slices=1000, smoke=FALSE, ylab='beta(t)',
-           median=TRUE, medianlwd=0.5, mediancol=palette, 
-           ci=TRUE, cilwd=0.5, cicol=palette, hint=NULL, ylim=c(-4, 1), title='confidence interval')
-  smoke.plot(mat, palette=palette, slices=1000, smoke.alpha=0.5,
-           ylim=c(-4, 1), title='single color, alpha = 0.5')
-  smoke.plot(mat, palette=palette, slices=1000, smoke.alpha=0.8,
-           ylim=c(-4, 1), ylab='beta(t)', title='single color, alpha = 0.8')
   smoke.plot(mat, palette=magma(10), slices=1000, smoke.alpha=0.5,
            ylim=c(-4, 1), title='color spectrum')
 ```
+
+## Examples
 ![Ex1](/img/smoke_plots.png)
 
 ## Dependencies
-
-* ggplot2
-* reshape2
-* viridis
-* plyr
+* ```ggplot2```
+* ```reshape2```
+* ```viridis```
+* ```plyr```
