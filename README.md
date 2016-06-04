@@ -5,7 +5,7 @@ A function (smoke.plot.R) for visualizing results uncertainty. The function draw
 The code is adapted from [Felix Schönbrodt](http://www.nicebread.de/visually-weighted-watercolor-plots-new-variants-please-vote/) and is motivated by Solomon Hsiang's [paper](http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2265501).
 
 ## Examples
-
+<code>
   mat <- as.matrix(read.table("https://github.com/george-wood/example_matrix.txt", header=FALSE))
   palette <- 'deepskyblue4'
   smoke.plot(mat, palette=palette, slices=1000, smoke=FALSE, ylab='beta(t)',
@@ -17,7 +17,7 @@ The code is adapted from [Felix Schönbrodt](http://www.nicebread.de/visually-we
            ylim=c(-4, 1), ylab='beta(t)', title='single color, alpha = 0.8')
   smoke.plot(mat, palette=magma(10), slices=1000, smoke.alpha=0.5,
            ylim=c(-4, 1), title='color spectrum')
-
+</code>
 ![Ex1](/img/smoke_plots.png)
 
 ## Dependencies
