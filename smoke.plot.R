@@ -37,6 +37,7 @@ smoke.plot <- function (mat, nsim=1000, palette=magma(40), slices=200, smoke=TRU
   library(reshape2)
   library(plyr)
   library(viridis)
+  library(ggthemes)
   
   normv <- function(n, mean, sd){
       out <- rnorm(n*length(mean), mean = mean, sd = sd)
@@ -72,8 +73,8 @@ smoke.plot <- function (mat, nsim=1000, palette=magma(40), slices=200, smoke=TRU
   p0 <- ggplot(smooth.long, aes(x=x, y=value)) + 
     xlab(xlab) + ylab(ylab) +
     scale_x_continuous(breaks = round(seq(min(smooth.long$x), max(smooth.long$x), by = 180), 0)) +
-    scale_y_continuous(breaks = ybreaks) + ylim(ylim) + theme_bw(base_size = 8) + 
-    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+    scale_y_continuous(breaks = ybreaks) + ylim(ylim) + theme_fivethirtyeight(base_size = 8) # +
+    #theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
   
   gg.raster <- gg.hline <- gg.spag <- gg.median <- gg.ci1 <- gg.ci2 <- gg.title <- NULL
 
