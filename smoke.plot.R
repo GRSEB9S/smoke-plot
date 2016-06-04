@@ -31,7 +31,7 @@
 
 smoke.plot <- function (mat, nsim=1000, palette=magma(40), slices=200, smoke=TRUE, smoke.alpha=0.1, spag=FALSE,
                         ci=FALSE, cilwd=1, cicol='black', conf=0.975, median=FALSE, medianlwd=1, mediancol='black', 
-                        hint=NULL, xlab='x', ylab='', title='', ybreaks=NULL, ylim=NULL, seed=1) {
+                        hint=NULL, xlab='x', ylab='', title='', ybreaks=NULL, ylim=NULL, theme=NULL, seed=1) {
   
   library(ggplot2)
   library(reshape2)
@@ -70,11 +70,18 @@ smoke.plot <- function (mat, nsim=1000, palette=magma(40), slices=200, smoke=TRU
     ylim <- c(min(smooth.long$value), max(smooth.long$value))
   }
   
-  p0 <- ggplot(smooth.long, aes(x=x, y=value)) + 
-    xlab(xlab) + ylab(ylab) +
-    scale_x_continuous(breaks = round(seq(min(smooth.long$x), max(smooth.long$x), by = 180), 0)) +
-    scale_y_continuous(breaks = ybreaks) + ylim(ylim) + theme_fivethirtyeight(base_size = 8) # +
-    #theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+  if (is.null(theme)) {
+    p0 <- ggplot(smooth.long, aes(x=x, y=value)) + 
+      xlab(xlab) + ylab(ylab) +
+      scale_x_continuous(breaks = round(seq(min(smooth.long$x), max(smooth.long$x), by = 180), 0)) +
+      scale_y_continuous(breaks = ybreaks) + ylim(ylim) + theme_bw() +
+      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+  } else {
+    p0 <- ggplot(smooth.long, aes(x=x, y=value)) + 
+      xlab(xlab) + ylab(ylab) +
+      scale_x_continuous(breaks = round(seq(min(smooth.long$x), max(smooth.long$x), by = 180), 0)) +
+      scale_y_continuous(breaks = ybreaks) + ylim(ylim) + theme
+  }
   
   gg.raster <- gg.hline <- gg.spag <- gg.median <- gg.ci1 <- gg.ci2 <- gg.title <- NULL
 
