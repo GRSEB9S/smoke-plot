@@ -19,6 +19,7 @@ The code is adapted from [Felix Schönbrodt](http://www.nicebread.de/visually-we
 
 ## Dependencies
 * ```ggplot2```
+* ```ggthemes```
 * ```reshape2```
 * ```viridis```
 * ```plyr```
