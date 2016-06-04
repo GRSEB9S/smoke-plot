@@ -7,6 +7,7 @@ The code is adapted from [Felix Schönbrodt](http://www.nicebread.de/visually-we
 ## Usage
 ```
   mat <- as.matrix(read.table("https://github.com/george-wood/example_matrix.txt", header=FALSE))
+  source("https://github.com/george-wood/smoke.plot.R")
   smoke.plot(mat, palette=magma(10), slices=1000, smoke.alpha=0.5,
            ylim=c(-4, 1), title='color spectrum')
 ```
