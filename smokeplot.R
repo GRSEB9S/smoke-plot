@@ -29,7 +29,7 @@
 # seed: seed for draws from posterior
 ######################################################
 
-smoke.plot <- function (mat, nsim=1000, palette=magma(40), slices=200, smoke=TRUE, smoke.alpha=0.1, spag=FALSE,
+smokeplot <- function (mat, nsim=1000, palette=magma(40), slices=200, smoke=TRUE, smoke.alpha=0.1, spag=FALSE,
                         ci=FALSE, cilwd=1, cicol='black', conf=0.975, median=FALSE, medianlwd=1, mediancol='black', 
                         hint=NULL, xlab='x', ylab='', title='', ybreaks=NULL, ylim=NULL, theme=NULL, seed=1) {
   
