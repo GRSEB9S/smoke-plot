@@ -29,9 +29,11 @@
 # seed: seed for draws from posterior
 ######################################################
 
-smokeplot <- function (mat, nsim=1000, palette=magma(40), slices=200, smoke=TRUE, smoke.alpha=0.1, spag=FALSE,
-                        ci=FALSE, cilwd=1, cicol='black', conf=0.975, median=FALSE, medianlwd=1, mediancol='black', 
-                        hint=NULL, xlab='x', ylab='', title='', ybreaks=NULL, ylim=NULL, theme=NULL, seed=1) {
+smokeplot <- function (mat, draws=TRUE, smooth=TRUE, nsim=1000, palette=magma(40), slices=200, smoke=TRUE, smoke.alpha=0.1, spag=FALSE,
+                       shape=21, ci=FALSE, cilwd=1, cicol='black', conf=0.975,
+                       median=FALSE, medianlwd=1, mediancol='black', hline=NULL, 
+                       xlab='x', ylab='', title='', theme=NULL, seed=1,
+                       ybreaks=NULL, ylim=NULL, yby=2, xbreaks=NULL, xlim=NULL, xby=2) {
   
   library(ggplot2)
   library(reshape2)
@@ -39,52 +41,61 @@ smokeplot <- function (mat, nsim=1000, palette=magma(40), slices=200, smoke=TRUE
   library(viridis)
   library(ggthemes)
   
-  normv <- function(n, mean, sd){
+  if (draws==TRUE) {
+    normv <- function(n, mean, sd){
       out <- rnorm(n*length(mean), mean = mean, sd = sd)
-    return( matrix(out, ncol = n, byrow = FALSE))
+      return( matrix(out, ncol = n, byrow = FALSE))
+    }
+  
+    set.seed(seed)
+    draws <- normv(nsim, mat[,2], mat[,3])
+  }  
+  
+  if (smooth==TRUE) {
+    lo <- list()
+    for (i in 1:ncol(draws)) {
+      lo[[i]] <- loess(draws[,i] ~ mat[,1], span = 0.25,
+                       control = loess.control(surface = "i", statistics="a", trace.hat="a"))
+    }
+    smooth.mat <- matrix(NA, ncol=length(lo), nrow = length(mat[,1]))
+    for(i in 1:length(lo)) {
+      smooth.mat[,i] <- lo[[i]]$fitted
+    }
+    smooth.long <- melt(smooth.mat)
+    smooth.long$x <- rep(mat[,1], nsim)
+    smooth.long <- smooth.long[with(smooth.long, order(x)), ]
+  } else {
+    smooth.long <- mat[with(mat, order(x)), ]
   }
-  
-  set.seed(seed)
-  draws <- normv(nsim, mat[,2], mat[,3])
-  
-  lo <- list()
-  for (i in 1:ncol(draws)) {
-    lo[[i]] <- loess(draws[,i] ~ mat[,1], span = 0.25,
-                     control = loess.control(surface = "i", statistics="a", trace.hat="a"))
-  }
-  
-  smooth.mat <- matrix(NA, ncol=length(lo), nrow = length(mat[,1]))
-  for(i in 1:length(lo)) {
-    smooth.mat[,i] <- lo[[i]]$fitted
-  }
-  
-  smooth.long <- melt(smooth.mat) 
-  smooth.long$x <- rep(mat[,1], nsim)
-  smooth.long <- smooth.long[with(smooth.long, order(x)), ]
-  
+
   if (is.null(ybreaks)) {
-    ybreaks <- round(seq(min(smooth.long$value), max(smooth.long$value), by = 2), 0)
+    ybreaks <- round(seq(min(smooth.long$value), max(smooth.long$value), by = yby), 0)
   }
-  
+  if (is.null(xbreaks)) {
+    xbreaks <- round(seq(min(smooth.long$x), max(smooth.long$x), by = xby), 0)
+  }
   if (is.null(ylim)) {
     ylim <- c(min(smooth.long$value), max(smooth.long$value))
+  }
+  if (is.null(xlim)) {
+    xlim <- c(min(smooth.long$x), max(smooth.long$x))
   }
   
   if (is.null(theme)) {
     p0 <- ggplot(smooth.long, aes(x=x, y=value)) + 
       xlab(xlab) + ylab(ylab) +
-      scale_x_continuous(expand = c(0, 0), breaks = round(seq(min(smooth.long$x), max(smooth.long$x), by = 180), 0)) +
-      scale_y_continuous(expand = c(0, 0), breaks = ybreaks) + ylim(ylim) + theme_bw() +
+      scale_x_continuous(expand = c(0, 0), breaks = xbreaks, limits = xlim) +
+      scale_y_continuous(expand = c(0, 0), breaks = ybreaks, limits = ylim) + theme_bw() +
       theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
   } else {
     p0 <- ggplot(smooth.long, aes(x=x, y=value)) + 
       xlab(xlab) + ylab(ylab) +
-      scale_x_continuous(expand = c(0, 0), breaks = round(seq(min(smooth.long$x), max(smooth.long$x), by = 180), 0)) +
-      scale_y_continuous(expand = c(0, 0), breaks = ybreaks) + ylim(ylim) + theme
+      scale_x_continuous(expand = c(0, 0), breaks = xbreaks, limits = xlim) + 
+      scale_y_continuous(expand = c(0, 0), breaks = ybreaks, limits = ylim) + theme
   }
   
   gg.raster <- gg.hline <- gg.spag <- gg.median <- gg.ci1 <- gg.ci2 <- gg.title <- NULL
-
+  
   # define gg elements
   if (smoke == TRUE) {
     min_value <- min(smooth.long[,3], na.rm=TRUE)
@@ -105,7 +116,7 @@ smokeplot <- function (mat, nsim=1000, palette=magma(40), slices=200, smoke=TRUE
     d2$dens.scaled <- (d2$dens - mindens)/maxdens  
     d2$alpha.factor <- d2$dens.scaled^smoke.alpha
     gg.raster <-  list(geom_raster(data=d2, aes(x=x, y=y, fill=dens.scaled, alpha=alpha.factor), interpolate=TRUE),
-                      scale_fill_gradientn("dens.scaled", colours=palette), scale_alpha_continuous(range=c(0.001, 1)))
+                       scale_fill_gradientn("dens.scaled", colours=palette), scale_alpha_continuous(range=c(0.001, 1)))
   }
   if (median == TRUE) {
     med <- smooth.spline(mat[,1], rowMeans(draws), spar=0.25)
@@ -122,15 +133,17 @@ smokeplot <- function (mat, nsim=1000, palette=magma(40), slices=200, smoke=TRUE
     gg.ci1 <- geom_path(data=conf.dat, aes(x=x, y=upr), size=cilwd, linetype=2, color=cicol)
     gg.ci2 <- geom_path(data=conf.dat, aes(x=x, y=lwr), size=cilwd, linetype=2, color=cicol)
   }
-  if (is.numeric(hint)) {
-    gg.hline <- geom_hline(yintercept=hint, linetype=3)
+  # add horizontal line
+  if (is.numeric(hline)) {
+    gg.hline <- geom_hline(yintercept=hline, linetype=3)
   }
+  
   gg.title <- ggtitle(title)
   
   print("Build ggplot figure ...")
   flush.console()
-
+  
   gg.elements <- list(gg.raster, gg.spag, gg.median, gg.ci1, gg.ci2, gg.hline, gg.title, theme(legend.position="none"))
-
+  
   p0 + gg.elements
 }
