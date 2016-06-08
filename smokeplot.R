@@ -30,10 +30,10 @@
 ######################################################
 
 smokeplot <- function (mat, draws=TRUE, smooth=TRUE, nsim=1000, palette=magma(40), slices=200, smoke=TRUE, smoke.alpha=0.1, spag=FALSE,
-                       shape=21, ci=FALSE, cilwd=1, cicol='black', conf=0.975,
-                       median=FALSE, medianlwd=1, mediancol='black', hline=NULL, 
-                       xlab='x', ylab='', title='', theme=NULL, seed=1,
-                       ybreaks=NULL, ylim=NULL, yby=2, xbreaks=NULL, xlim=NULL, xby=2) {
+          shape=21, ci=FALSE, cilwd=1, cicol='black', conf=0.975,
+          median=FALSE, medianlwd=1, mediancol='black', hline=NULL, 
+          xlab='x', ylab='', title='', theme=NULL, seed=1, fontsize=8,
+          ybreaks=NULL, ylim=NULL, yby=2, xbreaks=NULL, xlim=NULL, xby=2) {
   
   library(ggplot2)
   library(reshape2)
@@ -46,7 +46,7 @@ smokeplot <- function (mat, draws=TRUE, smooth=TRUE, nsim=1000, palette=magma(40
       out <- rnorm(n*length(mean), mean = mean, sd = sd)
       return( matrix(out, ncol = n, byrow = FALSE))
     }
-  
+    
     set.seed(seed)
     draws <- normv(nsim, mat[,2], mat[,3])
   }  
@@ -67,7 +67,7 @@ smokeplot <- function (mat, draws=TRUE, smooth=TRUE, nsim=1000, palette=magma(40
   } else {
     smooth.long <- mat[with(mat, order(x)), ]
   }
-
+  
   if (is.null(ybreaks)) {
     ybreaks <- round(seq(min(smooth.long$value), max(smooth.long$value), by = yby), 0)
   }
@@ -85,7 +85,7 @@ smokeplot <- function (mat, draws=TRUE, smooth=TRUE, nsim=1000, palette=magma(40
     p0 <- ggplot(smooth.long, aes(x=x, y=value)) + 
       xlab(xlab) + ylab(ylab) +
       scale_x_continuous(expand = c(0, 0), breaks = xbreaks, limits = xlim) +
-      scale_y_continuous(expand = c(0, 0), breaks = ybreaks, limits = ylim) + theme_bw() +
+      scale_y_continuous(expand = c(0, 0), breaks = ybreaks, limits = ylim) + theme_bw(base_size = fontsize) +
       theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
   } else {
     p0 <- ggplot(smooth.long, aes(x=x, y=value)) + 
